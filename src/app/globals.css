@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --main-bg: #F4F6FB;
+  --card-bg: #FFFFFF;
+  --text-primary: #111827;
+  --text-secondary: #64748B;
+  --btn-primary: #C65D2E;
+  --btn-hover: #A94724;
+  --border-color: #E5E7EB;
 }
+
+.dark {
+  --main-bg: #0B1120;
+  --card-bg: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --btn-primary: #E07A4F;
+  --btn-hover: #C65D2E;
+  --border-color: #334155;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+button, a, input, select, textarea { touch-action: manipulation; }
+input, select, textarea { font-size: 16px; }
+@media (min-width: 640px) { input, select, textarea { font-size: inherit; } }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-main-bg: var(--main-bg);
+  --color-card-bg: var(--card-bg);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-btn-primary: var(--btn-primary);
+  --color-btn-hover: var(--btn-hover);
+  --color-border-color: var(--border-color);
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: "Courier New", monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--main-bg);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Global Dark Mode Overrides for existing components */
+.dark .bg-white { background-color: var(--card-bg) !important; }
+.dark .bg-slate-50, .dark .bg-slate-100 { background-color: var(--main-bg) !important; }
+.dark .text-slate-900, .dark .text-slate-800 { color: var(--text-primary) !important; }
+.dark .text-slate-700, .dark .text-slate-600, .dark .text-slate-500 { color: var(--text-secondary) !important; }
+.dark .border-slate-200, .dark .border-slate-300, .dark .border-slate-100 { border-color: var(--border-color) !important; }
+.dark input, .dark textarea, .dark select {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
 }

@@ -1,0 +1,143 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Global User Roles
+enum Role {
+  PLATFORM_ADMIN
+  BUSINESS_ADMIN
+  BUSINESS_STAFF
+}
+
+// Menu Draft/Publish States
+enum MenuStatus {
+  DRAFT
+  PUBLISHED
+}
+
+// --- Platform Management ---
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  role         Role      @default(BUSINESS_ADMIN)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Tenant Relationship (Optional for Platform Admins)
+  businessId   String?
+  business     Business? @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+}
+
+// --- Tenant Entity ---
+model Business {
+  id          String   @id @default(cuid())
+  slug        String   @unique // URL identifier e.g. platform.com/menu/abc-cafe
+  name        String
+  type        String   // Restaurant, Cafe, Hotel, Resort
+  phone       String?
+  email       String?
+  address     String?
+  description String?  @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Multi-tenant relations
+  users      User[]
+  branding    Branding?
+  menus       Menu[]
+  categories  Category[]
+  items       MenuItem[]
+}
+
+// --- Brand Customization Token Mapping ---
+model Branding {
+  id             String   @id @default(cuid())
+  businessId     String   @unique
+  business       Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  logoUrl        String?
+  coverImageUrl  String?
+  primaryColor   String   @default("#0f172a") // Hex values
+  secondaryColor String   @default("#f8fafc")
+  accentColor    String   @default("#e2e8f0")
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// --- Menus (e.g., Main Menu, Room Service, Bar) ---
+model Menu {
+  id           String     @id @default(cuid())
+  businessId   String
+  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  name         String     // e.g. "Room Service Menu"
+  description  String?
+  status       MenuStatus @default(DRAFT)
+  displayOrder Int        @default(0)
+
+  categories   Category[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([businessId])
+}
+
+// --- Categories (e.g., Breakfast, Drinks, Mains) ---
+model Category {
+  id           String     @id @default(cuid())
+  businessId   String
+  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  menuId       String
+  menu         Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  name         String
+  imageUrl     String?
+  displayOrder Int        @default(0)
+  isActive     Boolean    @default(true)
+
+  items        MenuItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([businessId])
+  @@index([menuId])
+}
+
+// --- Menu Items ---
+model MenuItem {
+  id           String    @id @default(cuid())
+  businessId   String
+  business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Localized trilingual string support (English, Amharic, Oromic)
+  name         String
+  nameAmharic  String?
+  nameOromo    String?
+  description  String?   @db.Text
+  descAmharic  String?   @db.Text
+  descOromo    String?   @db.Text
+  
+  price        Decimal   @db.Decimal(10, 2)
+  currency     String    @default("ETB")
+  imageUrl     String?
+  isAvailable  Boolean   @default(true)
+  displayOrder Int       @default(0)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([businessId])
+  @@index([categoryId])
+}
