@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate --config ./prisma7.config.ts && next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -34,5 +34,10 @@
     "prisma": "^7.10.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@prisma/engines": true,
+    "prisma": true,
+    "unrs-resolver": true
   }
 }
