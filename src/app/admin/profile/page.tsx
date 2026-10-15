@@ -84,7 +84,7 @@ export default function ProfilePage() {
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 text-slate-900 text-sm bg-white"
             >
               <option value="Restaurant">Restaurant</option>
-              <option value="Cafe">Café</option>
+              <option value="Cafe">Cafe</option>
               <option value="Hotel">Hotel</option>
               <option value="Resort">Resort</option>
               <option value="Bar">Bar / Lounge</option>
