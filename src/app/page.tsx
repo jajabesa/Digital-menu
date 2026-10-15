@@ -1,15 +1,32 @@
+
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { QrCode, Sparkles, Smartphone, ShieldCheck, ArrowRight } from "lucide-react"
+import { connection } from "next/server"
+import {
+  QrCode,
+  Sparkles,
+  Smartphone,
+  ShieldCheck,
+  ArrowRight,
+} from "lucide-react"
 
 export const instant = false
 
 export default async function LandingPage() {
+  // Render at request time before accessing authentication
+  await connection()
+
   const session = await auth()
+
   if (session?.user) {
-    redirect((session.user as any).role === "PLATFORM_ADMIN" ? "/platform/dashboard" : "/admin/dashboard")
+    redirect(
+      (session.user as any).role === "PLATFORM_ADMIN"
+        ? "/platform/dashboard"
+        : "/admin/dashboard"
+    )
   }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-orange-700 selection:text-white">
       {/* Navigation Header */}
@@ -50,10 +67,15 @@ export default async function LandingPage() {
 
         <div className="space-y-6 max-w-3xl mx-auto">
           <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
-            Transform Your Restaurant with <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-rose-300">Branded Dynamic QR Menus</span>
+            Transform Your Restaurant with{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-rose-300">
+              Branded Dynamic QR Menus
+            </span>
           </h1>
           <p className="text-slate-400 text-base sm:text-lg leading-relaxed font-normal">
-            The multi-tenant hospitality platform empowering businesses to design, customize, and publish instant QR code digital menus with full multi-language capabilities.
+            The multi-tenant hospitality platform empowering businesses to
+            design, customize, and publish instant QR code digital menus with
+            full multi-language capabilities.
           </p>
         </div>
 
@@ -69,7 +91,8 @@ export default async function LandingPage() {
             href="/login"
             className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-bold text-sm transition flex items-center justify-center gap-2"
           >
-            <QrCode className="w-4 h-4 text-orange-400" /> Generate Table QRs
+            <QrCode className="w-4 h-4 text-orange-400" />
+            Generate Table QRs
           </Link>
         </div>
 
@@ -79,9 +102,12 @@ export default async function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-orange-950 text-orange-400 border border-orange-800/40 flex items-center justify-center">
               <QrCode className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-white text-base">Instant QR Generation</h3>
+            <h3 className="font-bold text-white text-base">
+              Instant QR Generation
+            </h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Export high-resolution table QR codes linking patrons straight to your active dynamic menu in seconds.
+              Export high-resolution table QR codes linking patrons straight
+              to your active dynamic menu in seconds.
             </p>
           </div>
 
@@ -89,9 +115,12 @@ export default async function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/40 flex items-center justify-center">
               <Smartphone className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-white text-base">Trilingual Customer Experience</h3>
+            <h3 className="font-bold text-white text-base">
+              Trilingual Customer Experience
+            </h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Seamless EN / አማ / ORO language toggling designed natively for Ethiopian hospitality.
+              Seamless EN / አማ / ORO language toggling designed natively for
+              Ethiopian hospitality.
             </p>
           </div>
 
@@ -99,9 +128,12 @@ export default async function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800/40 flex items-center justify-center">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-white text-base">Multi-Tenant Isolation</h3>
+            <h3 className="font-bold text-white text-base">
+              Multi-Tenant Isolation
+            </h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Every business owns its isolated branding tokens, menu items, prices, and status updates.
+              Every business owns its isolated branding tokens, menu items,
+              prices, and status updates.
             </p>
           </div>
         </div>
